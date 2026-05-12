@@ -15,7 +15,6 @@ Repositori ini berisi konfigurasi sistem NixOS saya secara lengkap, dikelola men
 - **Spesifik hardware**: Konfigurasi NVIDIA Prime di `configuration.nix` menggunakan `intelBusId = "PCI:0:2:0"` dan `nvidiaBusId = "PCI:1:0:0"` yang sesuai dengan mesin saya. Nilai ini **hampir pasti berbeda** di mesin kamu — menggunakannya tanpa penyesuaian dapat menyebabkan sistem gagal booting atau layar tidak muncul.
 - **Spesifik username**: Seluruh konfigurasi (path, user, grup, aliases) menggunakan username `andyh`. Ganti semua kemunculannya di seluruh file `.nix` sebelum menerapkan.
 - **NixOS unstable**: Flake ini menggunakan channel `nixos-unstable`. Perilaku beberapa paket bisa berubah sewaktu-waktu.
-- **Bukan untuk pemula**: Membutuhkan pemahaman dasar tentang NixOS, Nix Flakes, dan Home Manager.
 - **Backup data terlebih dahulu** sebelum menjalankan `nixos-rebuild`.
 
 ---
