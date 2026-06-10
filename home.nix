@@ -159,6 +159,12 @@
     '';
   };
 
+  # symlink config file
+  xdg.configFile = {
+  "hypr/hyprland.conf".source =
+    ./config/hypr/hyprland.conf;
+  };
+
   # starship
   programs.starship = {
     enable = true;
