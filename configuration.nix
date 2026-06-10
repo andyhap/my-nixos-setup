@@ -147,6 +147,30 @@ in
   nixpkgs.overlays = [
     inputs.claude-code.overlays.default
     inputs.codex-cli.overlays.default
+
+    (final: prev: {
+      gns3-server = prev.gns3-server.overrideAttrs (old: rec {
+        version = "2.2.59";
+        src = prev.fetchFromGitHub {
+          owner = "GNS3";
+          repo = "gns3-server";
+          tag = "v${version}";
+          hash = "sha256-xsiwD+o9M/ZwR8t+EA9mWxAlfSKLCvNr1U2qRcmSDzg=";
+        };
+      });
+
+      gns3-gui = prev.gns3-gui.overridePythonAttrs (old: rec {
+        version = "2.2.59";
+        src = prev.fetchFromGitHub {
+          owner = "GNS3";
+          repo = "gns3-gui";
+          tag = "v${version}";
+          hash = "sha256-eYtuGVRfgUFBLxGT0xfiMhbjoMzc6F/VHjI9VN3ADAs=";
+        };
+        patches = [];
+        dependencies = old.dependencies ++ [ prev.python3Packages.qdarkstyle ];
+      });
+    })
   ];
 
   # enable realtime kit
