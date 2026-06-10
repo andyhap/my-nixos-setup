@@ -133,22 +133,48 @@
   # Mengizinkan Home Manager mengelola .bashrc secara utuh
   programs.bash = {
     enable = true;
-    
-    shellAliases = {
-      # --- NixOS Rebuild Aliases ---
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos/#nixos";
-      rebuild-fast = "sudo nixos-rebuild switch --fast --flake /etc/nixos/#nixos";
-      rebuild-build = "sudo nixos-rebuild build --flake /etc/nixos/#nixos";
-      rollback = "sudo nixos-rebuild switch --rollback";
-      gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
-      update = "nix flake update /etc/nixos/ && rebuild";
-      nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimize";
 
-      # --- Edit Configs ---
-      edit-nix = "sudo nano /etc/nixos/configuration.nix";
-      edit-flake = "sudo nano /etc/nixos/flake.nix";
-      edit-home = "sudo nano /etc/nixos/home.nix";
-      edit-hypr = "nano ~/.config/hypr/hyprland.conf";
+    shellAliases = {
+      # --- Rebuild ---
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+      rebuild-fast = "sudo nixos-rebuild switch --fast --flake ~/nixos-config";
+      rebuild-build = "sudo nixos-rebuild build --flake ~/nixos-config";
+      rollback = "sudo nixos-rebuild switch --rollback";
+
+      # --- Flake Management ---
+      update = "cd ~/nixos-config && nix flake update && rebuild";
+      update-hm = "cd ~/nixos-config && nix flake update home-manager";
+      update-nixpkgs = "cd ~/nixos-config && nix flake update nixpkgs";
+
+      # --- Generations ---
+      gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+      gc = "sudo nix-collect-garbage -d";
+      nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimize";
+      gc-week = "sudo nix-collect-garbage --delete-older-than 7d";
+      gc3 = "sudo nix-collect-garbage --delete-older-than 3d";
+
+      # --- Git ---
+      gs = "git status";
+      ga = "git add .";
+      gcm = "git commit -m";
+      gp = "git push";
+
+      # --- NixOS Config ---
+      edit-nix = "code ~/nixos-config/configuration.nix";
+      edit-home = "code ~/nixos-config/home.nix";
+      edit-flake = "code ~/nixos-config/flake.nix";
+
+      # --- Hyprland ---
+      edit-hypr = "code ~/nixos-config/config/hypr/hyprland.conf";
+      edit-kitty-wrapper = "code ~/nixos-config/config/hypr/scripts/kitty-wrapper.sh";
+
+      # --- Repo ---
+      croot = "cd ~/nixos-config";
+
+      # --- Diagnostics ---
+      dirty = "cd ~/nixos-config && git status --short";
+      store-size = "nix path-info -Sh /run/current-system";
+      nix-check = "sudo nixos-rebuild dry-build --flake ~/nixos-config";
 
       # --- Utils ---
       nixfast = "nix shell nixpkgs#";
@@ -161,9 +187,12 @@
 
   # symlink config file
   xdg.configFile = {
-  "hypr/hyprland.conf".source =
-    ./config/hypr/hyprland.conf;
-  };
+    "hypr/hyprland.conf".source =
+      ./config/hypr/hyprland.conf;
+
+    "hypr/scripts/kitty-wrapper.sh".source =
+      ./config/hypr/scripts/kitty-wrapper.sh;
+   };
 
   # starship
   programs.starship = {
