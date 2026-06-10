@@ -1,9 +1,17 @@
 { config, pkgs, inputs, lib, ... }:
 
 {
+  imports = [ inputs.caelestia-shell.homeManagerModules.default ];
+
   home.username = "andyh";
   home.homeDirectory = "/home/andyh";
   home.stateVersion = "25.11"; # Sesuaikan dengan versi NixOS kamu
+
+  programs.caelestia = {
+    enable = true;
+    cli.enable = true;
+    systemd.enable = true;
+  };
 
   # Paket aplikasi user (Bisa diatur temanya secara dinamis)
   home.packages = with pkgs; [
@@ -16,12 +24,23 @@
     pkgs.vscode
     postman
     pkgs.nodejs_22
-    
+    (python3.withPackages (ps: with ps; [
+      pip
+      virtualenv
+      setuptools
+      black       # Untuk auto-format kode Python di VS Code
+      flake8      # Untuk linting/deteksi error Python
+    ]))
+
+    # AI
+    claude-code    
+    codex
+
     # Internet & Chat
     firefox
     discord
     telegram-desktop
-    inputs.helium.packages.${pkgs.system}.default    
+    inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default    
 
     # Media & Graphics
     obs-studio
@@ -34,7 +53,7 @@
     slurp
     wl-clipboard
     pulseaudio
-    
+
     # Office & Tools
     onlyoffice-desktopeditors
     remmina
@@ -45,9 +64,7 @@
     # File Manager & Theming
     bibata-cursors
     qt6Packages.qt6ct
-    # thunar
-    # thunar-archive-plugin
-    # thunar-volman
+    # libsForQt5.qt5ct
     graphite-gtk-theme
     tela-circle-icon-theme
     pkgs.tumbler
@@ -113,6 +130,35 @@
     gtk4.theme = config.gtk.theme;
   };
 
+  # Mengizinkan Home Manager mengelola .bashrc secara utuh
+  programs.bash = {
+    enable = true;
+    
+    shellAliases = {
+      # --- NixOS Rebuild Aliases ---
+      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos/#nixos";
+      rebuild-fast = "sudo nixos-rebuild switch --fast --flake /etc/nixos/#nixos";
+      rebuild-build = "sudo nixos-rebuild build --flake /etc/nixos/#nixos";
+      rollback = "sudo nixos-rebuild switch --rollback";
+      gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+      update = "nix flake update /etc/nixos/ && rebuild";
+      nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimize";
+
+      # --- Edit Configs ---
+      edit-nix = "sudo nano /etc/nixos/configuration.nix";
+      edit-flake = "sudo nano /etc/nixos/flake.nix";
+      edit-home = "sudo nano /etc/nixos/home.nix";
+      edit-hypr = "nano ~/.config/hypr/hyprland.conf";
+
+      # --- Utils ---
+      nixfast = "nix shell nixpkgs#";
+    };
+
+    initExtra = ''
+      export PATH="$HOME/.npm-global/bin:$PATH"
+    '';
+  };
+
   # starship
   programs.starship = {
     enable = true;
@@ -131,47 +177,17 @@
   home.activation.removeBackups = lib.hm.dag.entryAfter ["writeBoundary"] ''
     find ${config.home.homeDirectory} -name "*.backup" -type f -delete
   '';
-  
-  # Symlink Hyprland & Script Kitty
-  xdg.configFile."hypr" = {
-    source = ./config/hypr;
-    recursive = true;
-  };
-  xdg.configFile."hypr/scripts/kitty-wrapper.sh".executable = true;
 
   # Konfigurasi Environment khusus Hyprland lewat UWSM
   xdg.configFile."uwsm/env-hyprland".text = ''
     export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
     export AQ_FORCE_LINEAR_BLIT="1"
     export AQ_MGPU_NO_EXPLICIT="0"
+
+    export QT_QPA_PLATFORM="wayland;xcb"
+    export QT_AUTO_SCREEN_SCALE_FACTOR="1"
+    export QT_QPA_PLATFORMTHEME="qt6ct"
   '';
-
-  # konfigurasi bash
-  programs.bash = {
-    enable = true;
-    
-    # Home Manager otomatis akan membuatkan alias ini di .bashrc kamu
-    shellAliases = {
-      # --- NixOS Rebuild Aliases ---
-      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
-      rebuild-fast = "sudo nixos-rebuild switch --fast --flake ~/nixos-config#nixos";
-      rebuild-build = "sudo nixos-rebuild build --flake ~/nixos-config#nixos";
-      rollback = "sudo nixos-rebuild switch --rollback";
-      gens = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
-      update = "nix flake update ~/nixos-config && rebuild";
-      nix-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo nix-store --optimize";
-
-      # --- Edit Configs ---
-      # Tidak perlu sudo lagi karena folder ~/nixos-config milik user andyh
-      edit-nix = "nano ~/nixos-config/configuration.nix";
-      edit-flake = "nano ~/nixos-config/flake.nix";
-      edit-home = "nano ~/nixos-config/home.nix";
-      edit-hypr = "nano ~/nixos-config/config/hypr/hyprland.conf";
-
-      # --- Utils ---
-      nixfast = "nix shell nixpkgs#";
-    };
-  };
 
   # konfigurasi khusus untuk pipewire-pulse
   xdg.configFile."systemd/user/pipewire-pulse.service.d/ladspa-fix.conf".text = ''

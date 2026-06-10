@@ -101,7 +101,8 @@ in
   networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
   # Set your time zone.
-  time.timeZone = "Asia/Jakarta";
+  # time.timeZone = "Asia/Jakarta";
+  time.timeZone = "Asia/Makassar";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -136,20 +137,26 @@ in
   
     # SDDM & System Theming
     astronaut-theme
-    qt6.qtbase
-    kdePackages.qtwayland
-    qt6Packages.qtdeclarative
-    qt6Packages.qtsvg
-    qt6Packages.qtmultimedia
-    
+    # qt6.qtbase
+    # kdePackages.qtwayland
+    # qt6Packages.qtdeclarative
+    # qt6Packages.qtsvg
+    # qt6Packages.qtmultimedia
+    # qt5.qtwayland
+
     # Virtualization & Networking Server
     gns3-server
     dynamips
     qemu
 
     # Caelestia CLI (Global Access)
-    inputs.caelestia-shell.packages.x86_64-linux.with-cli
-    inputs.caelestia-cli.packages.x86_64-linux.default
+    # inputs.caelestia-shell.packages.x86_64-linux.with-cli
+    # inputs.caelestia-cli.packages.x86_64-linux.default
+  ];
+
+  nixpkgs.overlays = [
+    inputs.claude-code.overlays.default
+    inputs.codex-cli.overlays.default
   ];
 
   # enable realtime kit
@@ -171,7 +178,7 @@ in
 
       LIBVA_DRIVER_NAME = "iHD";
       NIXOS_OZONE_WL = "1";
-      QT_QPA_PLATFORM = "wayland;xcb";
+      # QT_QPA_PLATFORM = "wayland;xcb";
 
       __GL_GSYNC_ALLOWED = "1";
       __GL_VRR_ALLOWED = "1";
@@ -182,6 +189,8 @@ in
       __GL_SHADER_DISK_CACHE = "1";
       __GL_SHADER_DISK_CACHE_PATH = "/home/andyh/.cache/nv_shaders";
       __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+
+      # QT_QPA_PLATFORMTHEME = "qt6ct";
   };
 
   fonts.packages = with pkgs; [
@@ -218,6 +227,8 @@ in
       thunar-volman
     ];
   };
+
+  programs.nix-ld.enable = true;
 
   xdg.portal = {
   enable = true;
@@ -356,8 +367,35 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  #nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    trusted-users = [ "root" "andyh" ];
+    substituters = [ 
+      "https://claude-code.cachix.org" 
+      "https://codex-cli.cachix.org" 
+    ];
+    trusted-public-keys = [ 
+      "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk=" 
+      "codex-cli.cachix.org-1:9u3p9Nl9RmW1W2t7/rEv9TDuEAsYkC1w7u6M8sRkK8Y="
+      "codex-cli.cachix.org-1:1Br3H1hHoRYG22n//cGKJOk3cQXgYobUel6O8DgSing="
+    ];
+  };
+
+  # zrak
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+    priority = 10;
+  };
+
+  # swap memory
+  swapDevices = [ {
+    device = "/var/lib/swapfile";
+    size = 8 * 1024; # 8GB dalam satuan Megabytes
+    priority = 5;
+  } ];
 
   system.stateVersion = "25.11"; # Did you read the comment?
-
 }

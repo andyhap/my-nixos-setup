@@ -26,9 +26,15 @@
       url = "github:caelestia-dots/cli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # claude-code
+    claude-code.url = "github:sadjow/claude-code-nix";
+ 
+    # codex
+    codex-cli.url = "github:sadjow/codex-cli-nix";
   };
  
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, claude-code, codex-cli, ... }@inputs: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
