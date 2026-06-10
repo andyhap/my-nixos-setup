@@ -135,23 +135,13 @@ in
     gpu-screen-recorder
     polkit_gnome    
   
-    # SDDM & System Theming
+    # SDDM
     astronaut-theme
-    # qt6.qtbase
-    # kdePackages.qtwayland
-    # qt6Packages.qtdeclarative
-    # qt6Packages.qtsvg
-    # qt6Packages.qtmultimedia
-    # qt5.qtwayland
 
     # Virtualization & Networking Server
     gns3-server
     dynamips
     qemu
-
-    # Caelestia CLI (Global Access)
-    # inputs.caelestia-shell.packages.x86_64-linux.with-cli
-    # inputs.caelestia-cli.packages.x86_64-linux.default
   ];
 
   nixpkgs.overlays = [
@@ -178,7 +168,6 @@ in
 
       LIBVA_DRIVER_NAME = "iHD";
       NIXOS_OZONE_WL = "1";
-      # QT_QPA_PLATFORM = "wayland;xcb";
 
       __GL_GSYNC_ALLOWED = "1";
       __GL_VRR_ALLOWED = "1";
@@ -189,8 +178,6 @@ in
       __GL_SHADER_DISK_CACHE = "1";
       __GL_SHADER_DISK_CACHE_PATH = "/home/andyh/.cache/nv_shaders";
       __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
-
-      # QT_QPA_PLATFORMTHEME = "qt6ct";
   };
 
   fonts.packages = with pkgs; [

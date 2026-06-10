@@ -5,7 +5,7 @@
 
   home.username = "andyh";
   home.homeDirectory = "/home/andyh";
-  home.stateVersion = "25.11"; # Sesuaikan dengan versi NixOS kamu
+  home.stateVersion = "25.11"; # Sesuaikan dengan versi NixOS awal yang digunakan
 
   programs.caelestia = {
     enable = true;
