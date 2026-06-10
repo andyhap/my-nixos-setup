@@ -2,7 +2,7 @@
   description = "NixOS Flake andyh";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     
     # Home Manager
     home-manager = {
