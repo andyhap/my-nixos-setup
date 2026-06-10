@@ -160,13 +160,13 @@
       gp = "git push";
 
       # --- NixOS Config ---
-      edit-nix = "code ~/nixos-config/configuration.nix";
-      edit-home = "code ~/nixos-config/home.nix";
-      edit-flake = "code ~/nixos-config/flake.nix";
+      edit-nix = "sudo nano ~/nixos-config/configuration.nix";
+      edit-home = "sudo nano ~/nixos-config/home.nix";
+      edit-flake = "sudo nano ~/nixos-config/flake.nix";
 
       # --- Hyprland ---
-      edit-hypr = "code ~/nixos-config/config/hypr/hyprland.conf";
-      edit-kitty-wrapper = "code ~/nixos-config/config/hypr/scripts/kitty-wrapper.sh";
+      edit-hypr = "nano ~/nixos-config/config/hypr/hyprland.conf";
+      edit-kitty-wrapper = "nano ~/nixos-config/config/hypr/scripts/kitty-wrapper.sh";
 
       # --- Repo ---
       croot = "cd ~/nixos-config";
