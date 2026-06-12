@@ -38,9 +38,9 @@
 
     # Internet & Chat
     firefox
-    discord
     telegram-desktop
     inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default    
+    vesktop
 
     # Media & Graphics
     obs-studio
@@ -185,7 +185,7 @@
     '';
   };
 
-  # symlink config file
+  # symlink config hypr file
   xdg.configFile = {
     "hypr/hyprland.conf".source =
       ./config/hypr/hyprland.conf;
@@ -193,6 +193,28 @@
     "hypr/scripts/kitty-wrapper.sh".source =
       ./config/hypr/scripts/kitty-wrapper.sh;
    };
+
+  # Hyperland dynamic border
+  home.file.".local/bin/update-hypr-colors.sh" = {
+    source = ./config/hypr/scripts/update-hypr-colors.sh;
+    executable = true;
+  };
+
+  systemd.user.services.hypr-dynamic-border = {
+    Unit = {
+      Description = "Hyprland Dynamic Border Updater";
+    };
+
+    Service = {
+      ExecStart = "${pkgs.bash}/bin/bash -c 'while true; do ~/.local/bin/update-hypr-colors.sh; sleep 2; done'";
+      Restart = "always";
+      RestartSec = 5;
+    };
+
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
 
   # starship
   programs.starship = {
