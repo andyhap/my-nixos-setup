@@ -60,7 +60,6 @@ in
     "nvidia-drm.modeset=1"  
     "nvidia-drm.fbdev=1"
     "i915.enable_psr=0"
-    "usbhid.mousepoll=4"
     "i915.enable_guc=3" 
     "i915.force_probe=46a3"
     "vt.global_cursor_default=0"
@@ -253,7 +252,11 @@ in
   };
   
   hardware.bluetooth.enable = true;
-  powerManagement.cpuFreqGovernor = "performance";
+  
+  # power management 
+  # powerManagement.cpuFreqGovernor = "performance";
+  powerManagement.cpuFreqGovernor = "schedutil";
+  powerManagement.powertop.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
   virtualisation.virtualbox.host.enableExtensionPack = true;
@@ -298,6 +301,7 @@ in
     ];
   };
 
+  services.thermald.enable = true;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
@@ -329,7 +333,11 @@ in
   '';
 
   # NVDIA Driver
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = [
+    "modesetting"
+    "nvidia"
+  ];
 
   hardware.nvidia = {
       modesetting.enable = true;
@@ -378,14 +386,15 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   
-  #nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
+  
     trusted-users = [ "root" "andyh" ];
     substituters = [ 
       "https://claude-code.cachix.org" 
       "https://codex-cli.cachix.org" 
     ];
+
     trusted-public-keys = [ 
       "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk=" 
       "codex-cli.cachix.org-1:9u3p9Nl9RmW1W2t7/rEv9TDuEAsYkC1w7u6M8sRkK8Y="
@@ -393,7 +402,7 @@ in
     ];
   };
 
-  # zrak
+  # zram
   zramSwap = {
     enable = true;
     algorithm = "zstd";

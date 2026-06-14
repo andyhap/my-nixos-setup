@@ -5,7 +5,7 @@
 
   home.username = "andyh";
   home.homeDirectory = "/home/andyh";
-  home.stateVersion = "25.11"; # Sesuaikan dengan versi NixOS awal yang digunakan
+  home.stateVersion = "25.11";
 
   programs.caelestia = {
     enable = true;
@@ -237,7 +237,7 @@
 
   # Konfigurasi Environment khusus Hyprland lewat UWSM
   xdg.configFile."uwsm/env-hyprland".text = ''
-    export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
+    # export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
     export AQ_FORCE_LINEAR_BLIT="1"
     export AQ_MGPU_NO_EXPLICIT="0"
 
@@ -283,9 +283,6 @@
           
           /run/wrappers/bin/noisetorch -i "$MIC_NAME"
           sleep 2
-          
-          # set default mic ke noise torch
-          # ${pkgs.pulseaudio}/bin/pactl set-default-source noisetorch
         fi
       ''}";
     };
