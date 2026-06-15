@@ -176,7 +176,8 @@ in
   security.rtkit.enable = true;
 
   environment.sessionVariables = {
-      QSG_RHI_BACKEND = "opengl";
+      # QSG_RHI_BACKEND = "opengl";
+      QSG_RHI_BACKEND = "basic";
       QSG_RENDER_LOOP = "threaded";
 
       CLUTTER_BACKEND = "wayland";
@@ -254,9 +255,7 @@ in
   hardware.bluetooth.enable = true;
   
   # power management 
-  # powerManagement.cpuFreqGovernor = "performance";
   powerManagement.cpuFreqGovernor = "schedutil";
-  powerManagement.powertop.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
   virtualisation.virtualbox.host.enableExtensionPack = true;
@@ -301,6 +300,7 @@ in
     ];
   };
 
+  # Power Management Service
   services.thermald.enable = true;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
