@@ -133,7 +133,9 @@ in
     libnotify
     gpu-screen-recorder
     polkit_gnome    
-  
+    file-roller
+    unrar
+    p7zip  
     # SDDM
     astronaut-theme
 
@@ -333,7 +335,6 @@ in
   '';
 
   # NVDIA Driver
-  # services.xserver.videoDrivers = [ "nvidia" ];
   services.xserver.videoDrivers = [
     "modesetting"
     "nvidia"
