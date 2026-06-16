@@ -22,3 +22,6 @@ general {
 EOF
 
 hyprctl reload
+
+kitty @ load-config >/dev/null 2>&1 || true
+

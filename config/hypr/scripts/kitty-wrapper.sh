@@ -4,7 +4,7 @@ CONF_FILE="$HOME/.cache/caelestia/colors-kitty.conf"
 
 # 1. Sedot JSON warna langsung dari wallpaper yang SEDANG AKTIF!
 # 2. Parse menggunakan jq, ambil dari object ".colours", dan simpan ke .conf
-caelestia wallpaper -p 2>/dev/null | jq -r '
+caelestia scheme get 2>/dev/null | jq -r '
   "foreground #\(.colours.text)",
   "background #\(.colours.base)",
   "color0 #\(.colours.term0)",
