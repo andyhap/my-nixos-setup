@@ -136,6 +136,7 @@ in
     file-roller
     unrar
     p7zip  
+  
     # SDDM
     astronaut-theme
 

@@ -33,6 +33,7 @@
     ]))
 
     # AI
+    # pkgs.claude-desktop
     claude-code    
     codex
 

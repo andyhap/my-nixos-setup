@@ -2,30 +2,35 @@
 
 CONF_FILE="$HOME/.cache/caelestia/colors-kitty.conf"
 
-# 1. Sedot JSON warna langsung dari wallpaper yang SEDANG AKTIF!
-# 2. Parse menggunakan jq, ambil dari object ".colours", dan simpan ke .conf
-caelestia scheme get 2>/dev/null | jq -r '
-  "foreground #\(.colours.text)",
-  "background #\(.colours.base)",
-  "color0 #\(.colours.term0)",
-  "color1 #\(.colours.term1)",
-  "color2 #\(.colours.term2)",
-  "color3 #\(.colours.term3)",
-  "color4 #\(.colours.term4)",
-  "color5 #\(.colours.term5)",
-  "color6 #\(.colours.term6)",
-  "color7 #\(.colours.term7)",
-  "color8 #\(.colours.term8)",
-  "color9 #\(.colours.term9)",
-  "color10 #\(.colours.term10)",
-  "color11 #\(.colours.term11)",
-  "color12 #\(.colours.term12)",
-  "color13 #\(.colours.term13)",
-  "color14 #\(.colours.term14)",
-  "color15 #\(.colours.term15)",
-  "selection_background #\(.colours.primary)",
-  "selection_foreground #\(.colours.onPrimary)"
+caelestia scheme get | awk '
+  # Ini penangkalnya: Hapus semua ANSI escape codes dari kolom hex
+  { gsub(/\x1b\[[0-9;]*m/, "", $2) }
+  
+  # Tangkap warna teks dan background utama
+  $1 == "text:" { fg = $2 }
+  $1 == "base:" { bg = $2 }
+  
+  # Tangkap semua warna term0 sampai term15 secara otomatis
+  $1 ~ /^term[0-9]+:/ { 
+      key = substr($1, 1, length($1)-1)
+      term[key] = $2 
+  }
+  
+  # Tangkap warna seleksi kursor
+  $1 == "primary:" { sel_bg = $2 }
+  $1 == "onPrimary:" { sel_fg = $2 }
+  
+  # Tulis ulang dengan format Kitty (.conf)
+  END {
+      print "foreground #" fg
+      print "background #" bg
+      for (i=0; i<=15; i++) {
+          print "color" i " #" term["term" i]
+      }
+      print "selection_background #" sel_bg
+      print "selection_foreground #" sel_fg
+  }
 ' > "$CONF_FILE"
 
-# 3. Buka Kitty
+# Buka Kitty seperti biasa
 exec kitty "$@"
