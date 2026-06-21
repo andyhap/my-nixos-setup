@@ -168,6 +168,7 @@
       # --- Hyprland ---
       edit-hypr = "nano ~/nixos-config/config/hypr/hyprland.conf";
       edit-kitty-wrapper = "nano ~/nixos-config/config/hypr/scripts/kitty-wrapper.sh";
+      edit-thunar = "nano ~/nixos-config/config/thunar/gtk.css";
 
       # --- Repo ---
       croot = "cd ~/nixos-config";
