@@ -4,6 +4,12 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     
+    # lanzaboote
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Home Manager
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -34,12 +40,14 @@
     codex-cli.url = "github:sadjow/codex-cli-nix";
   };
  
-  outputs = { self, nixpkgs, home-manager, claude-code, codex-cli, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, claude-code, codex-cli, lanzaboote, ... }@inputs: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
+        lanzaboote.nixosModules.lanzaboote
+        
         # home module manager
         home-manager.nixosModules.home-manager
         {

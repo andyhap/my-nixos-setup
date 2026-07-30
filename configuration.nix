@@ -27,13 +27,19 @@ in
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+      ./hosts/hardware-configuration.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
   # boot.initrd.includeDefaultModules = true;
+
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
+
   boot.initrd.kernelModules = [ 
     "i915"
     "nvidia"
@@ -42,15 +48,16 @@ in
     "nvidia_drm"
   ];
 
-  boot.loader.grub = {
-    enable = true;
-    device = "nodev";
-    efiSupport = true;
-    useOSProber = true;
-    gfxmodeEfi = "1920x1080,auto";
-    gfxpayloadEfi = "keep";  
-    splashImage = null;
-  }; 
+  # GRUB boot loader
+  # boot.loader.grub = {
+  #   enable = true;
+  #   device = "nodev";
+  #   efiSupport = true;
+  #   useOSProber = true;
+  #   gfxmodeEfi = "1920x1080,auto";
+  #   gfxpayloadEfi = "keep";  
+  #   splashImage = null;
+  # }; 
 
  boot.kernelParams = [
     "quiet"
@@ -100,8 +107,8 @@ in
   networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
   # Set your time zone.
-  # time.timeZone = "Asia/Jakarta";
-  time.timeZone = "Asia/Makassar";
+  time.timeZone = "Asia/Jakarta";
+  # time.timeZone = "Asia/Makassar";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -136,6 +143,7 @@ in
     file-roller
     unrar
     p7zip  
+    sbctl  
   
     # SDDM
     astronaut-theme

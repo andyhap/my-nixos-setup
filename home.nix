@@ -1,7 +1,15 @@
 { config, pkgs, inputs, lib, ... }:
 
+let
+  # starship theme 
+  themeName = "catppuccin";
+in
+
 {
-  imports = [ inputs.caelestia-shell.homeManagerModules.default ];
+  imports = [ 
+    inputs.caelestia-shell.homeManagerModules.default
+    ./modules/starship-theme.nix
+  ];
 
   home.username = "andyh";
   home.homeDirectory = "/home/andyh";
@@ -12,6 +20,9 @@
     cli.enable = true;
     systemd.enable = true;
   };
+  
+  # starship theme
+  mySettings.starshipTheme = "catppuccin"; # Kamu bisa ganti ke "future" di sini
 
   # Paket aplikasi user (Bisa diatur temanya secara dinamis)
   home.packages = with pkgs; [
@@ -226,7 +237,10 @@
     enableBashIntegration = true; 
 
     # Membaca file TOML eksternal secara declarative
-    settings = builtins.fromTOML (builtins.readFile ./starship-catppuccin.toml);
+    # settings = builtins.fromTOML (builtins.readFile ./starship-catppuccin.toml);
+    settings = builtins.fromTOML (builtins.readFile (
+      ./config/starship-theme/starship-${config.mySettings.starshipTheme}.toml
+    ));
   };
 
   # Membiarkan Home Manager mengelola dirinya sendiri
@@ -239,7 +253,7 @@
 
   # Konfigurasi Environment khusus Hyprland lewat UWSM
   xdg.configFile."uwsm/env-hyprland".text = ''
-    # export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
+    export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
     export AQ_FORCE_LINEAR_BLIT="1"
     export AQ_MGPU_NO_EXPLICIT="0"
 
