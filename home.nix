@@ -1,10 +1,5 @@
 { config, pkgs, inputs, lib, ... }:
 
-let
-  # starship theme 
-  themeName = "catppuccin";
-in
-
 {
   imports = [ 
     inputs.caelestia-shell.homeManagerModules.default
@@ -22,9 +17,9 @@ in
   };
   
   # starship theme
-  mySettings.starshipTheme = "catppuccin"; # Kamu bisa ganti ke "future" di sini
+  mySettings.starshipTheme = "bracketed"; # Change the Starship theme -> catppuccin or bracketed
 
-  # Paket aplikasi user (Bisa diatur temanya secara dinamis)
+  # User application package
   home.packages = with pkgs; [
     # Dev & Terminal
     vim
@@ -39,8 +34,8 @@ in
       pip
       virtualenv
       setuptools
-      black       # Untuk auto-format kode Python di VS Code
-      flake8      # Untuk linting/deteksi error Python
+      black       
+      flake8
     ]))
 
     # AI
@@ -76,7 +71,6 @@ in
     # File Manager & Theming
     bibata-cursors
     qt6Packages.qt6ct
-    # libsForQt5.qt5ct
     graphite-gtk-theme
     tela-circle-icon-theme
     pkgs.tumbler
@@ -86,11 +80,11 @@ in
     pkgs.gvfs
   ];
 
-  # Konfigurasi Kitty
+  # Kitty Configuration
   programs.kitty = {
     enable = true;
     
-    # Mengaktifkan IPC dan Remote Control
+    # Activate IPC dan Remote Control
     settings = {
       allow_remote_control = "yes";
       listen_on = "unix:/tmp/kitty";
@@ -113,15 +107,6 @@ in
     '';
   };
 
-  # Pengaturan kursor agar konsisten
-  home.pointerCursor = {
-    gtk.enable = true;
-    x11.enable = true;
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Ice";
-    size = 24;
-  };
-
   # Graphite theme
   gtk = {
     enable = true;
@@ -142,7 +127,7 @@ in
     gtk4.theme = config.gtk.theme;
   };
 
-  # Mengizinkan Home Manager mengelola .bashrc secara utuh
+  # Allow Home Manager to manage .bashrc entirely.
   programs.bash = {
     enable = true;
 
@@ -233,28 +218,28 @@ in
   programs.starship = {
     enable = true;
     
-    # Otomatis integrasi ke bash
+    # Automatic integration into bash
     enableBashIntegration = true; 
 
-    # Membaca file TOML eksternal secara declarative
-    # settings = builtins.fromTOML (builtins.readFile ./starship-catppuccin.toml);
+    # Read an external TOML file declaratively
     settings = builtins.fromTOML (builtins.readFile (
       ./config/starship-theme/starship-${config.mySettings.starshipTheme}.toml
     ));
   };
 
-  # Membiarkan Home Manager mengelola dirinya sendiri
+  # Letting Home Manager manage itself
   programs.home-manager.enable = true;
 
-  # Otomatis hapus semua file berakhiran .backup setelah aktivasi selesai
+  # Automatically delete all files ending in .backup after activation is complete.
   home.activation.removeBackups = lib.hm.dag.entryAfter ["writeBoundary"] ''
     find ${config.home.homeDirectory} -name "*.backup" -type f -delete
   '';
 
-  # Konfigurasi Environment khusus Hyprland lewat UWSM
+  # Hyprland-specific environment configuration via UWSM 
   xdg.configFile."uwsm/env-hyprland".text = ''
-    export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
-    export AQ_FORCE_LINEAR_BLIT="1"
+    export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0" # Primary nvidia gpu 
+    # export AQ_DRM_DEVICES="/dev/dri/card0:/dev/dri/card1" # Primary gpu utama
+    export AQ_FORCE_LINEAR_BLIT="0"
     export AQ_MGPU_NO_EXPLICIT="0"
 
     export QT_QPA_PLATFORM="wayland;xcb"
@@ -262,13 +247,13 @@ in
     export QT_QPA_PLATFORMTHEME="qt6ct"
   '';
 
-  # konfigurasi khusus untuk pipewire-pulse
+  # custom configuration for pipewire-pulse
   xdg.configFile."systemd/user/pipewire-pulse.service.d/ladspa-fix.conf".text = ''
     [Service]
     Environment="LADSPA_PATH=/tmp"
   '';
 
-  # konfigurasi dan auto start noisetorch
+  # NoiseTorch configuration and auto-start
   xdg.desktopEntries.noisetorch = {
     name = "NoiseTorch";
     genericName = "Microphone Noise Suppression";
@@ -293,7 +278,7 @@ in
         MIC_NAME=$(${pkgs.pulseaudio}/bin/pactl get-default-source)
 
         if [ -n "$MIC_NAME" ] && [ "$MIC_NAME" != "noisetorch" ]; then
-          # Bersihkan sisa noisetorch yang mungkin nyangkut
+          # Clean up any remaining NoiseTorch traces that might be left behind
           /run/wrappers/bin/noisetorch -u || true
           sleep 1
           

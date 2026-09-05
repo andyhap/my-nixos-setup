@@ -48,17 +48,6 @@ in
     "nvidia_drm"
   ];
 
-  # GRUB boot loader
-  # boot.loader.grub = {
-  #   enable = true;
-  #   device = "nodev";
-  #   efiSupport = true;
-  #   useOSProber = true;
-  #   gfxmodeEfi = "1920x1080,auto";
-  #   gfxpayloadEfi = "keep";  
-  #   splashImage = null;
-  # }; 
-
  boot.kernelParams = [
     "quiet"
     "splash"
@@ -349,22 +338,39 @@ in
     "nvidia"
   ];
 
-  hardware.nvidia = {
-      modesetting.enable = true;
-      powerManagement.enable = true;
-      powerManagement.finegrained = false;
-      open = false;
-      nvidiaSettings = true;
-      # package = config.boot.kernelPackages.nvidiaPackages.beta;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #  hardware.nvidia = {
+  #     modesetting.enable = true;
+  #     powerManagement.enable = true;
+  #     powerManagement.finegrained = false;
+  #     open = false;
+  #     nvidiaSettings = true;
+  #     # package = config.boot.kernelPackages.nvidiaPackages.beta;
+  #     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-      # prime hybrid
-      prime = {
-        offload.enable = true;        
-        offload.enableOffloadCmd = true;
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
+  #     # prime hybrid
+  #     prime = {
+  #       offload.enable = true;        
+  #       offload.enableOffloadCmd = true;
+  #       intelBusId = "PCI:0:2:0";
+  #       nvidiaBusId = "PCI:1:0:0";
+  #     };
+  #  };
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+
+    powerManagement.enable = true;
+    powerManagement.finegrained = false;
+
+    open = false;
+    nvidiaSettings = true;
+
+    prime = {
+      sync.enable = true;
+
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
   };
 
   hardware.graphics = {
