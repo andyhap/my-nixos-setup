@@ -1,26 +1,25 @@
+
 #!/usr/bin/env bash
+set -euo pipefail
 
 PRIMARY=$(caelestia wallpaper -p | jq -r '.colours.primary')
 TERTIARY=$(caelestia wallpaper -p | jq -r '.colours.tertiary')
 INACTIVE=$(caelestia wallpaper -p | jq -r '.colours.surfaceVariant')
 
 STATE="$HOME/.cache/caelestia/.last-border-colour"
-
 CURRENT="${PRIMARY}-${TERTIARY}-${INACTIVE}"
 
-if [[ -f "$STATE" ]] && [[ "$(cat "$STATE")" == "$CURRENT" ]]; then
+mkdir -p "$(dirname "$STATE")"
+
+if [[ "${1:-}" != "--force" ]] &&
+   [[ -f "$STATE" ]] &&
+   [[ "$(cat "$STATE")" == "$CURRENT" ]] &&
+   [[ "$(hyprctl getoption general:col.active_border)" == *"ee${PRIMARY}"* ]]; then
     exit 0
 fi
 
-echo "$CURRENT" > "$STATE"
+hyprctl eval "hl.config({ general = { [\"col.active_border\"] = \"rgba(${PRIMARY}ee)\", [\"col.inactive_border\"] = \"rgba(${INACTIVE}aa)\" } })"
 
-cat > "$HOME/.cache/caelestia/colors-hyprland.conf" << EOF
-general {
-    col.active_border = rgba(${PRIMARY}ee) rgba(${TERTIARY}ee) 45deg
-    col.inactive_border = rgba(${INACTIVE}aa)
-}
-EOF
-
-hyprctl reload
+printf '%s\n' "$CURRENT" > "$STATE"
 
 kitty @ load-config >/dev/null 2>&1 || true

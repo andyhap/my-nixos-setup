@@ -185,10 +185,16 @@
 
   # symlink config hypr file
   xdg.configFile = {
-    "hypr/hyprland.conf".source =
-      ./config/hypr/hyprland.conf;
+    "hypr/hyprland.lua".source =
+      ./config/hypr/hyprland.lua;
 
-    "hypr/scripts/kitty-wrapper.sh".source =
+    "hypr/modules".source =
+      ./config/hypr/modules;
+
+    "hypr/hyprland.conf".source =
+      ./config/hypr/hyprland.conf;   
+
+     "hypr/scripts/kitty-wrapper.sh".source =
       ./config/hypr/scripts/kitty-wrapper.sh;
    };
 
