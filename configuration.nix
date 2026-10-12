@@ -66,10 +66,10 @@ in
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
   ];
 
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages_6_6;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_6_6;
 
-  boot.kernelModules = [ "vboxdrv" "vboxnetflt" "vboxnetadp" "tun" ];
+  boot.kernelModules = [ "tun" ];
 
   boot.supportedFilesystems = [ "ntfs" ];
 
@@ -112,7 +112,7 @@ in
   users.users.andyh = {
     isNormalUser = true;
     description = "Andy Hikmal";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "vboxusers" "ubridge" "libvirtd" "render" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "ubridge" "libvirtd" "render" ];
     packages = with pkgs; [];
   };
 
@@ -256,9 +256,6 @@ in
   
   # power management 
   powerManagement.cpuFreqGovernor = "schedutil";
-
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableExtensionPack = true;
 
   virtualisation.libvirtd.enable = true;
 
