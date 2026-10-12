@@ -71,7 +71,7 @@
     # File Manager & Theming
     bibata-cursors
     qt6Packages.qt6ct
-    graphite-gtk-theme
+    # graphite-gtk-theme
     tela-circle-icon-theme
     pkgs.tumbler
     pkgs.ffmpegthumbnailer
@@ -111,13 +111,13 @@
   gtk = {
     enable = true;
     
-    theme = {
-      name = "Graphite-Dark";
-      package = pkgs.graphite-gtk-theme.override {
-        themeVariants = [ "default" ];
-        colorVariants = [ "dark" ];
-      };
-    };
+    # theme = {
+    #   name = "Graphite-Dark";
+    #   package = pkgs.graphite-gtk-theme.override {
+    #     themeVariants = [ "default" ];
+    #     colorVariants = [ "dark" ];
+    #   };
+    # };
 
     iconTheme = {
       name = "Tela-circle-dark";
